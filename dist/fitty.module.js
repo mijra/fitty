@@ -155,7 +155,7 @@ exports.default = function (w) {
 
   // dispatch a fit event on a fitty
   var dispatchFitEvent = function dispatchFitEvent(f) {
-    f.element.dispatchEvent(new window.CustomEvent('fit', {
+    f.element.dispatchEvent(new w.CustomEvent('fit', {
       detail: {
         oldValue: f.previousFontSize,
         newValue: f.currentFontSize,
@@ -223,7 +223,7 @@ exports.default = function (w) {
     if (!f.observeMutations) return;
 
     // start observing mutations
-    f.observer = new window.MutationObserver(fit(f, DrawState.DIRTY_CONTENT));
+    f.observer = new w.MutationObserver(fit(f, DrawState.DIRTY_CONTENT));
 
     // start observing
     f.observer.observe(f.element, f.observeMutations);
@@ -294,6 +294,8 @@ exports.default = function (w) {
   var resizeDebounce = null;
   var onWindowResized = function onWindowResized() {
     w.clearTimeout(resizeDebounce);
+    console.log(w.devicePixelRatio);
+    if (w.devicePixelRatio !== 2) return;
     resizeDebounce = w.setTimeout(redrawAll(DrawState.DIRTY_LAYOUT), fitty.observeWindowDelay);
   };
 
