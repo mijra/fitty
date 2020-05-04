@@ -281,9 +281,8 @@ export default ((w) => {
   let resizeDebounce = null
   const onWindowResized = () => {
     w.clearTimeout(resizeDebounce)
-    console.log(w.devicePixelRatio)
     var devicePixelRatio = w.devicePixelRatio
-    if (devicePixelRatio !== 1 || devicePixelRatio !== 2) return
+    if (devicePixelRatio !== 2) return
     resizeDebounce = w.setTimeout(
       redrawAll(DrawState.DIRTY_LAYOUT),
       fitty.observeWindowDelay

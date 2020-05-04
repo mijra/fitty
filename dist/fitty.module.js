@@ -294,8 +294,8 @@ exports.default = function (w) {
   var resizeDebounce = null;
   var onWindowResized = function onWindowResized() {
     w.clearTimeout(resizeDebounce);
-    console.log(w.devicePixelRatio);
-    if (w.devicePixelRatio !== 2) return;
+    var devicePixelRatio = w.devicePixelRatio;
+    if (devicePixelRatio !== 2) return;
     resizeDebounce = w.setTimeout(redrawAll(DrawState.DIRTY_LAYOUT), fitty.observeWindowDelay);
   };
 
