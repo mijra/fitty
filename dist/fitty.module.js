@@ -11,7 +11,6 @@ Object.defineProperty(exports, "__esModule", {
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 exports.default = function (w) {
-
   // no window, early exit
   if (!w) return;
 
@@ -26,10 +25,9 @@ exports.default = function (w) {
     DIRTY_CONTENT: 1,
     DIRTY_LAYOUT: 2,
     DIRTY: 3
-  };
 
-  // all active fitty elements
-  var fitties = [];
+    // all active fitty elements
+  };var fitties = [];
 
   // group all redraw calls till next frame, we cancel each frame request when a new one comes in. If no support for request animation frame, this is an empty function and supports for fitty stops.
   var redrawFrame = null;
@@ -46,7 +44,7 @@ exports.default = function (w) {
   var redrawAll = function redrawAll(type) {
     return function () {
       fitties.forEach(function (f) {
-        return f.dirty = type;
+        f.dirty = type;
       });
       requestRedraw();
     };
@@ -54,7 +52,6 @@ exports.default = function (w) {
 
   // redraws fitties so they nicely fit their parent container
   var redraw = function redraw(fitties) {
-
     // getting info from the DOM at this point should not trigger a reflow, let's gather as much intel as possible before triggering a reflow
 
     // check if styles of all fitties have been computed
@@ -84,11 +81,10 @@ exports.default = function (w) {
   };
 
   var markAsClean = function markAsClean(f) {
-    return f.dirty = DrawState.IDLE;
+    f.dirty = DrawState.IDLE;
   };
 
   var calculateStyles = function calculateStyles(f) {
-
     // get available width from parent node
     f.availableWidth = f.element.parentNode.clientWidth;
 
@@ -112,7 +108,6 @@ exports.default = function (w) {
 
   // every fitty element is tested for invalid styles
   var computeStyle = function computeStyle(f) {
-
     // get style properties
     var style = w.getComputedStyle(f.element, null);
 
@@ -126,7 +121,6 @@ exports.default = function (w) {
 
   // determines if this fitty requires initial styling, can be prevented by applying correct styles through CSS
   var shouldPreStyle = function shouldPreStyle(f) {
-
     var preStyle = false;
 
     // if we already tested for prestyling we don't have to do it again
@@ -152,17 +146,16 @@ exports.default = function (w) {
 
   // apply styles to single fitty
   var applyStyle = function applyStyle(f) {
-
     // remember original style, we need this to restore the fitty style when unsubscribing
     if (!f.originalStyle) f.originalStyle = f.element.getAttribute('style') || '';
 
     // set the new style to the original style plus the fitty styles
-    f.element.style.cssText = f.originalStyle + ';white-space:' + f.whiteSpace + ';display:' + f.display + ';font-size:' + f.currentFontSize + 'px';
+    f.element.style.cssText = f.originalStyle + ';white-space:' + f.whiteSpace + ';display:' + f.display + ';font-size:' + f.currentFontSize + 'px;';
   };
 
   // dispatch a fit event on a fitty
   var dispatchFitEvent = function dispatchFitEvent(f) {
-    f.element.dispatchEvent(new CustomEvent('fit', {
+    f.element.dispatchEvent(new window.CustomEvent('fit', {
       detail: {
         oldValue: f.previousFontSize,
         newValue: f.currentFontSize,
@@ -181,7 +174,6 @@ exports.default = function (w) {
   };
 
   var init = function init(f) {
-
     // should we observe DOM mutations
     observeMutations(f);
 
@@ -197,7 +189,6 @@ exports.default = function (w) {
 
   var destroy = function destroy(f) {
     return function () {
-
       // remove from fitties array
       fitties = fitties.filter(function (_) {
         return _.element !== f.element;
@@ -223,17 +214,16 @@ exports.default = function (w) {
   // remove an existing fitty
   var unsubscribe = function unsubscribe(f) {
     return function () {
-      return f.active = false;
+      f.active = false;
     };
   };
 
   var observeMutations = function observeMutations(f) {
-
     // no observing?
     if (!f.observeMutations) return;
 
     // start observing mutations
-    f.observer = new MutationObserver(fit(f, DrawState.DIRTY_CONTENT));
+    f.observer = new window.MutationObserver(fit(f, DrawState.DIRTY_CONTENT));
 
     // start observing
     f.observer.observe(f.element, f.observeMutations);
@@ -244,35 +234,30 @@ exports.default = function (w) {
     subtree: true,
     childList: true,
     characterData: true
-  };
 
-  // default fitty options
-  var defaultOptions = {
+    // default fitty options
+  };var defaultOptions = {
     minSize: 16,
     maxSize: 512,
     multiLine: true,
     observeMutations: 'MutationObserver' in w ? mutationObserverDefaultSetting : false
-  };
 
-  // array of elements in, fitty instances out
-  function fittyCreate(elements, options) {
-
+    // array of elements in, fitty instances out
+  };function fittyCreate(elements, options) {
     // set options object
     var fittyOptions = _extends({}, defaultOptions, options);
 
     // create fitties
     var publicFitties = elements.map(function (element) {
-
       // create fitty instance
       var f = _extends({}, fittyOptions, {
 
         // internal options for this fitty
         element: element,
         active: true
-      });
 
-      // initialise this fitty
-      init(f);
+        // initialise this fitty
+      });init(f);
 
       // expose API
       return {
@@ -295,15 +280,14 @@ exports.default = function (w) {
   function fitty(target) {
     var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
-
     // if target is a string
-    return typeof target === 'string' ?
+    return typeof target === 'string'
 
     // treat it as a querySelector
-    fittyCreate(toArray(document.querySelectorAll(target)), options) :
+    ? fittyCreate(toArray(document.querySelectorAll(target)), options)
 
     // create single fitty
-    fittyCreate([target], options)[0];
+    : fittyCreate([target], options)[0];
   }
 
   // handles viewport changes, redraws all fitties, but only does so after a timeout
